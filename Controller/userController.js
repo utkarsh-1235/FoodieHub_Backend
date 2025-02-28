@@ -47,11 +47,46 @@ const signUp = async(req, res)=>{
           })
     }
     catch(err){
-        console.log(err)
+        
         res.status(500).json({
             error: err.message
         })
     }
 }
 
-module.exports = {signUp};
+const login = async(req,res)=>{
+    try{
+
+        const {email, password} = req.body;
+         console.log(email, password)
+        if(!email || !password){
+            return res.status(401).json('Every Field is required');
+        }
+    
+        const user = await User.findOne({email}).select('+password');
+
+    
+        if(!user){
+                return res.status(403).json("Account doesn't exist with this email")
+        }
+    
+        const token = await user.jwtToken();
+    
+        res.cookie('token',token,cookieOption);
+        res.status(200).json({
+            status: true,
+            message: 'User Loggedin Successfully',
+            token: token,
+            user
+        })
+    }
+    catch(err){
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+module.exports = {signUp,
+                  login
+};
