@@ -1,32 +1,54 @@
 const {Schema, model} = require('mongoose');
 
 const CartSchema = new Schema({
+    dishId:{
+         type: String,
+         required: true
+    },
     
     user:{
-     type: Schema.Types.ObjectId,
-     ref: 'User',
-     required: true
-    },
+        name:{
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true
+        }
+     },
     items:[{
         dish: {
-            type: Schema.Types.ObjectId,
-            ref: 'Dish',
+           name:{
+            type: String,
             required: true
+           },
+           desc: {
+            type: String,
+            required: true
+           },
+           price:{
+            type: Number,
+            required: true
+          }
           },
           quantity:{
             type: Number,
             required: true
           },
-          price:{
-            type: Number,
-            required: true
-          }
+          
     }],
     restaurants:[{
         restaurant: {
-            type: Schema.Types.ObjectId,
-            ref: 'Restaurant',
-            required: true
+            name:{
+                type: String,
+                required: true
+            },
+
+            email: {
+                type: String,
+                required: true,
+                match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'please fill a valid email address']
+            }
         }
     }],
     status:{

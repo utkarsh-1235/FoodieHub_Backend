@@ -28,12 +28,16 @@ const MenuSchema = new Schema({
             required: true
         }
     }],
-    review:{
-        rating:{
+    review:[{
+        rating: {
            type: Schema.Types.ObjectId,
            ref: 'Reviewrating',
+        },
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
         }
-    }
+    }]
 },{
     timestamps: true
 })

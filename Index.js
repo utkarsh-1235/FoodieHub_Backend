@@ -4,6 +4,7 @@ require('dotenv').config();
 const cors = require('cors');
 const morgan = require('morgan');
 const userRoute = require('./Router/userRouter')
+const cartRoute = require('./Router/CartRoute');
 const app = express();
 const Port = process.env.PORT;
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 app.use('/api/users',userRoute);
+app.use('/api/carts',cartRoute);
 
 app.listen(Port,async()=>{
     await dbConnect();

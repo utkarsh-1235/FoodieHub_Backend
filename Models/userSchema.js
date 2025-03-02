@@ -36,6 +36,18 @@ const userSchema = new Schema({
             address: String
         }
     ],
+    order:[{
+        order: {
+            type: Schema.Types.ObjectId,
+            ref: 'Order'
+        }
+    }],
+    dish:[{
+        dish:{
+            type: Schema.Types.ObjectId,
+            ref: 'Dish'
+        }
+    }],
     forgotPasswordToken:{
         type: String
     },

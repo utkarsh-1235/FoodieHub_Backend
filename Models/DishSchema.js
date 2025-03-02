@@ -22,8 +22,15 @@ const DishSchema = new Schema({
         required: true
     },
     rating:{
-        type: String
-    }
+        type: Schema.Types.ObjectId,
+        ref: 'Reviewrating'
+    },
+    restaurants:[
+        {
+        type: Schema.Types.ObjectId,
+        ref: 'Restaurant'
+        }
+    ]
 },{
     timestamps: true
 })
