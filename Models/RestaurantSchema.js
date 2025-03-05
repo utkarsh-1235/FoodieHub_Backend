@@ -31,12 +31,12 @@ const RestaurantSchema = new Schema({
     type: String,
     required: true
    },
-   paymenOptions:{
-      type: [String],
-      required: true,
-      enum: ['Cash on delivery', 'Credit', 'Online Payment'],
-      default: 'Online Payment'
-   },
+//    paymenOptions:{
+//       type: [String],
+//       required: true,
+//       enum: ['Cash on delivery', 'Credit', 'Online Payment'],
+//       default: 'Online Payment'
+//    },
    hoursOfOperation:{
       type: String,
       required: true
@@ -53,8 +53,7 @@ const RestaurantSchema = new Schema({
    review:[
     {
         rating:{
-            type: Schema.Types.ObjectId,
-            ref: 'Reviewrating',
+            type: String,
         },
         user:{
             type: Schema.Types.ObjectId,
