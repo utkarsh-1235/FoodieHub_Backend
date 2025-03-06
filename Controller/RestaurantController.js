@@ -3,19 +3,34 @@ const RestaurantModel = require('../Models/RestaurantSchema');
 const addRestaurant = async(req, res)=>{
     try{
     
-        const{id, name, email, phoneNumber, description, cuisine, img} = req.body.restaurant;
-        const userId = req.body.userid;
+        const{name, email, address, phoneNumber, description, cuisine, img} = req.body.restaurant;
+        // const userId = req.body.userid;
+        
 
-        console.log(id, name, rating, cuisine,userId, email, phoneNumber, description)
+        console.log(name,cuisine,address, email, phoneNumber, description)
 
-        if(!id && !name &&!rating && !cuisine && !img && !userId){
+        if(!name || !email || !address || !phoneNumber || !cuisine || !img || !description){
             return res.status(401).json("All fields are required");
         }
 
+        const existingRestaurant = await RestaurantModel.findOne({name, address, email});
+
+        if(existingRestaurant){
+            return res.status(402).json("Restaurant already exist");
+        }
+          
         const restaurant = await RestaurantModel.create({
-             
+            name ,
+            address  ,
+            email ,
+            description ,
+            phoneNumber ,
+            cuisineType: cuisine,
+            image : img,
+
         })
-        await restaurant.save();
+        
+        console.log(restaurant);
 
         res.status(200).json({
             success: true,
@@ -24,10 +39,33 @@ const addRestaurant = async(req, res)=>{
 
 
     }catch(err){
+        
+
         res.status(500).json({
             success: false,
             message: err.message
         })
     }
 }
-module.exports = {addRestaurant};
+
+const getAllRestaurant = async(req,res)=>{
+    try{
+        const restaurants = await RestaurantModel.find();
+        if(!restaurants){
+            return res.status(401).json('There is no any single restaurant');
+        }
+         console.log(restaurants);
+        res.status(200).json({
+            success: true,
+            data: restaurants
+        })
+    }catch(err){
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+module.exports = {addRestaurant,
+                  getAllRestaurant
+};

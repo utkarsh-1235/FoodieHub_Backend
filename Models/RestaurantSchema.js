@@ -21,7 +21,8 @@ const RestaurantSchema = new Schema({
    phoneNumber:{
      type: String,
      required: true,
-     match: [/^\d{3}-\d{3}-\d{4}$/, 'Please fill a valid phone number (XXX-XXX-XXXX)']
+     maxLength: 10
+    //  match: [/^\d{3}-\d{3}-\d{4}$/, 'Please fill a valid phone number (XXX-XXX-XXXX)']
    },
    cuisineType: {
       type: String,
@@ -39,21 +40,23 @@ const RestaurantSchema = new Schema({
 //    },
    hoursOfOperation:{
       type: String,
-      required: true
+      
    },
    items:[
     {
         dish: {
             type: Schema.Types.ObjectId,
             ref: 'Dish',
-            required: true
+            
         }
     }
    ],
    review:[
     {
         rating:{
-            type: String,
+            type: Number,
+            min: 1,
+            max: 5
         },
         user:{
             type: Schema.Types.ObjectId,
