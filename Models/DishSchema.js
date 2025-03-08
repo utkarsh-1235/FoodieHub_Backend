@@ -10,7 +10,7 @@ const DishSchema = new Schema({
         required: true
     },
     price:{
-        type: String,
+        type: Number,
         required: true
     },
     description:{
@@ -28,12 +28,12 @@ const DishSchema = new Schema({
     restaurants:[
         {
         type: Schema.Types.ObjectId,
-        ref: 'Restaurant'
+        ref: 'restaurants'
         }
     ]
 },{
     timestamps: true
 })
 
-const DishModel = model('dish', DishSchema);
+const DishModel = model('Dishes', DishSchema);
 module.exports = DishModel;

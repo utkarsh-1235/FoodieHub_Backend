@@ -68,5 +68,5 @@ const RestaurantSchema = new Schema({
     timestamps: true
 })
 
-const Restaurantmodel = model('restaurant',RestaurantSchema);
+const Restaurantmodel = model('Restaurants',RestaurantSchema);
 module.exports = Restaurantmodel;

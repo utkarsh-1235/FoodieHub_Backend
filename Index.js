@@ -19,9 +19,9 @@ app.use(morgan('dev'));
 app.use('/api/users',userRoute);
 app.use('/api/carts',cartRoute);
 app.use('/api/restaurants', restaurantRoute);
+app.use('/api/dishes',restaurantRoute);
 
 app.listen(Port,async()=>{
     await dbConnect();
-    console.log(process.env.FRONTEND_URL)
     console.log(`Server is running on ${Port}`);
 })
