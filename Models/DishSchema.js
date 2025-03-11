@@ -28,7 +28,7 @@ const DishSchema = new Schema({
     restaurants:[
         {
         type: Schema.Types.ObjectId,
-        ref: 'restaurants'
+        ref: 'Restaurants'
         }
     ]
 },{

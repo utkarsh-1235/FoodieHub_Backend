@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const userRoute = require('./Router/userRouter')
 const cartRoute = require('./Router/CartRoute');
 const restaurantRoute = require('./Router/RestaurantRoute');
+const dishRoute = require('./Router/DishRoute');
 const app = express();
 const Port = process.env.PORT;
 
@@ -19,7 +20,7 @@ app.use(morgan('dev'));
 app.use('/api/users',userRoute);
 app.use('/api/carts',cartRoute);
 app.use('/api/restaurants', restaurantRoute);
-app.use('/api/dishes',restaurantRoute);
+app.use('/api/dishes',dishRoute);
 
 app.listen(Port,async()=>{
     await dbConnect();
