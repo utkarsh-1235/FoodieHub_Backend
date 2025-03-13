@@ -1,10 +1,10 @@
 const {Schema, model} = require('mongoose');
 
 const CartSchema = new Schema({
-    dishId:{
-         type: String,
-         required: true
-    },
+    // dishId:{
+    //      type: String,
+    //      required: true
+    // },
     
     user:{
         name:{
@@ -22,10 +22,6 @@ const CartSchema = new Schema({
             type: String,
             required: true
            },
-           desc: {
-            type: String,
-            required: true
-           },
            price:{
             type: Number,
             required: true
@@ -37,20 +33,20 @@ const CartSchema = new Schema({
           },
           
     }],
-    restaurants:[{
-        restaurant: {
-            name:{
-                type: String,
-                required: true
-            },
+    // restaurants:[{
+    //     restaurant: {
+    //         name:{
+    //             type: String,
+    //             required: true
+    //         },
 
-            email: {
-                type: String,
-                required: true,
-                match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'please fill a valid email address']
-            }
-        }
-    }],
+    //         email: {
+    //             type: String,
+    //             required: true,
+    //             match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'please fill a valid email address']
+    //         }
+    //     }
+    // }],
     status:{
         type: String,
         enum: ['Pending', 'Processing', 'Delivered'],

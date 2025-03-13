@@ -5,79 +5,75 @@ const userModel = require('../Models/userSchema');
 
 const CreateCart = async(req, res)=>{
     try{
-        
+        console.log(req.body);
         const cartData = req.body.cartData.cartData;
         const {userId, totalPrice,items, totalItems} = cartData;
         
      console.log(userId, totalPrice,items, totalItems)
 
+     if(!userId || !items || items.length === 0 ){
+        return res.status(401).json('All  the fields are required');
+    }
 
-        if(!userId || !items || items.length === 0 ){
-            return res.status(401).json('All  the fields are required');
+    const user = await userModel.findById(userId);
+    console.log('user',user);
+    if (!user) {
+        return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    let existingCart = await CartModel.findOne({'user.email':userId});
+
+    const dishIds = items.map((item)=>item.dishId);
+
+    const dishes = await DishModel.find({_id: {$in: dishIds}})
+
+    if (!dishes || dishes.length === 0) {
+        return res.status(404).json({ success: false, message: "Dishes not found" });
+    }
+
+
+    const formattedItems = items.map(item => {
+        const dish = dishes.find(d=>d._id.toString() === item.dishId);
+        return{
+            dish:{
+                name: dish.name,
+                price: dish.price
+            },
+            quantity: item.qty
+        }
+    }).filter(item => item !== null);
+   
+    if (formattedItems.length === 0) {
+        return res.status(400).json({ success: false, message: "No valid items found" });
+    }
+
+
+    if(existingCart){
+            existingCart.items.push(...items);
+            existingCart.totalitems += totalItems;
+            existingCart.totalPrice += totalPrice;
+        }else{
+            
+            existingCart = new CartModel({
+                user: { name: user.name, email: user.email },
+                items: formattedItems,      
+                totalPrice,
+                totalitems: totalItems
+            });
         }
 
-        const user = await userModel.findById(userId);
-        if(!user){
-           return res.status(402).json('user not found');
-        }
-        
-        // const restaurant = await restaurantIds.map((restaurantId)=> Restaurantmodel.findById({restaurantId}));
-        // if(!restaurant){
-        //    res.status(403).json('Restaurant not found');
-        // }
+        await existingCart.save();
 
-        const dishes = await Promise.all(items.map(async(item)=>DishModel.findById(item.dishId)));
-        console.log('dishes',dishes);
+                res.status(200).json({
+                    success: true,
+                    message: "Cart created successfully",
+                    cart: existingCart
+                })
 
-        const invalidDishes = items.filter((item, index) => !dishes[index]);
-        console.log("Invalid Dishes:", invalidDishes);
-        
-
-        if(invalidDishes.length > 0){
-            return res.status(404).json({
-                status: false,
-                message: 'One or more dishes not found'
-            })
-        }
-
-        const cart = await CartModel.create({
-            user: {
-                name: user.name,
-                email: user.email
-              },
-              items: dishIds.map((dish, index) => ({
-                dish: {
-                  name: dishes[index].name,
-                  desc: dishes[index].description,
-                  price: dishes[index].price
-                },
-                quantity: dish.quantity
-              })),
-              restaurants: [
-                {
-                  restaurant: restaurantIds.map((restaurantId)=>({
-                      name: restaurantId.name,
-                      email: restaurantId.email
-                  }))
-                }
-              ],
-              status: 'Pending',
-              totalPrice: totalPrice,
-              totalitem: totalItems,
-              added: Date.now
-              
-        
-            })
-            await cart.save();
-
-            res.status(200).json({
-                success: true,
-                message: "Cart created successfully",
-                cart
-            })
         }
 
     catch(err){
+        console.log(err);
         res.status(500).json({
             status: false,
             message: err.message
