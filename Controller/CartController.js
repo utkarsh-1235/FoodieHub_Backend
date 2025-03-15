@@ -80,5 +80,39 @@ const CreateCart = async(req, res)=>{
         })
     }
 }
+
+
+const getUserCart = async(req, res)=>{
+    try{
+      const {userId} = req.params;   
+
+      if(!userId){
+        return res.status(401).json('Please send any User for getting Cart details')
+      }
+     
+      const user = await userModel.findById(userId);
+
+      if(!user){
+        return res.status(403).json('User not found');
+      }
+
+      const carts = await CartModel.findOne({'user.email': user.email}).lean();
+      if(!carts){
+        return res.status(402).json('Please Create Cart for this user no carts found');
+      }
     
-module.exports = {CreateCart};
+      res.status(200).json({
+        status: true,
+        cartItems: Array.isArray(carts.items) ? carts.items : [],
+      })
+    }catch(err){
+        res.status(500).json({
+            status: false,
+            message: err.message
+        })
+    }
+}
+    
+module.exports = {CreateCart,
+                  getUserCart
+};

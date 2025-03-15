@@ -6,7 +6,7 @@ const getAllDish = async(req,res)=>{
         
         const dishes = await DishModel.find().populate('restaurants').exec();
                             
-        console.log('Dishes',dishes);
+        // console.log('Dishes',dishes);
 
         res.status(200).json({
             success: true,
