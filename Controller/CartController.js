@@ -9,7 +9,8 @@ const CreateCart = async(req, res)=>{
         const cartData = req.body.cartData.cartData;
         const {userId, totalPrice,items, totalItems} = cartData;
         
-     console.log(userId, totalPrice,items, totalItems)
+    //  console.log(userId, totalPrice,items, totalItems)
+    console.log('items', items);
 
      if(!userId || !items || items.length === 0 ){
         return res.status(401).json('All  the fields are required');
@@ -28,7 +29,7 @@ const CreateCart = async(req, res)=>{
     const dishes = await DishModel.find({_id: {$in: dishIds}})
 
     if (!dishes || dishes.length === 0) {
-        return res.status(404).json({ success: false, message: "Dishes not found" });
+        return res.status(402).json({ success: false, message: "Dishes not found" });
     }
 
 
@@ -37,6 +38,7 @@ const CreateCart = async(req, res)=>{
         return{
             dish:{
                 name: dish.name,
+                image: dish.img,
                 price: dish.price
             },
             quantity: item.qty
