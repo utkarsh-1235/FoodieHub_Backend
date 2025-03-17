@@ -17,7 +17,7 @@ const CreateCart = async(req, res)=>{
     }
 
     const user = await userModel.findById(userId);
-    console.log('user',user);
+    // console.log('user',user);
     if (!user) {
         return res.status(404).json({ success: false, message: "User not found" });
     }
@@ -57,7 +57,7 @@ const CreateCart = async(req, res)=>{
 
 
     if(existingCart){
-            existingCart.items.push(...items);
+            existingCart.items.push(...formattedItems);
             existingCart.totalitems += totalItems;
             existingCart.totalPrice += totalPrice;
         }else{
@@ -69,6 +69,7 @@ const CreateCart = async(req, res)=>{
                 totalitems: totalItems
             });
         }
+        console.log('Updating existing cart',existingCart);
 
         await existingCart.save();
 
