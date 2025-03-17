@@ -10,7 +10,7 @@ const CreateCart = async(req, res)=>{
         const {userId, totalPrice,items, totalItems} = cartData;
         
     //  console.log(userId, totalPrice,items, totalItems)
-    console.log('items', items);
+    // console.log('items', items);
 
      if(!userId || !items || items.length === 0 ){
         return res.status(401).json('All  the fields are required');
@@ -22,11 +22,13 @@ const CreateCart = async(req, res)=>{
         return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    let existingCart = await CartModel.findOne({'user.email':userId});
-
+    let existingCart = await CartModel.findOne({'user.email':user.email});
+     console.log('existing cart',existingCart);
     const dishIds = items.map((item)=>item.dishId);
+    console.log('DishIds',dishIds);
 
-    const dishes = await DishModel.find({_id: {$in: dishIds}})
+    const dishes = await DishModel.find({_id: {$in: dishIds}});
+    console.log('Fetching Dishes',dishes);
 
     if (!dishes || dishes.length === 0) {
         return res.status(402).json({ success: false, message: "Dishes not found" });
@@ -34,7 +36,11 @@ const CreateCart = async(req, res)=>{
 
 
     const formattedItems = items.map(item => {
-        const dish = dishes.find(d=>d._id.toString() === item.dishId);
+        const dish = dishes.find(d=>d._id.toString() === item.dishId.toString());
+        if (!dish) {
+            console.log(`Dish not found for ID: ${item.dishId}`); // Debugging log
+            return null; // Skip missing dishes
+        }
         return{
             dish:{
                 name: dish.name,
