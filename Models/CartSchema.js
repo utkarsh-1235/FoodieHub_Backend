@@ -13,7 +13,8 @@ const CartSchema = new Schema({
         },
         email: {
             type: String,
-            required: true
+            required: true,
+            unique: true
         }
      },
     items:[{
