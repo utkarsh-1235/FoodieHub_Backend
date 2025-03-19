@@ -9,6 +9,8 @@ const CreateCart = async(req, res)=>{
         const cartData = req.body.cartData.cartData;
         const {userId,items} = cartData;
         
+        items.map(item => console.log(item));
+        
     //  console.log(userId, totalPrice,items, totalItems)
     // console.log('items', items);
 
@@ -23,10 +25,11 @@ const CreateCart = async(req, res)=>{
     }
 
     let existingCart = await CartModel.findOne({'user.email':user.email});
-     console.log('existing cart',existingCart);
+    //  console.log('existing cart',existingCart);
     const dishIds = items.map((item)=>item.dishId);
-    console.log('DishIds',dishIds);
+    // console.log('DishIds',dishIds);
 
+    
     const dishes = await DishModel.find({_id: {$in: dishIds}});
     // const dishes = await Promise.all(dishIds.map(async(dishId)=> await DishModel.findById(dishId)));
     console.log('Fetching Dishes',dishes);
@@ -38,12 +41,14 @@ const CreateCart = async(req, res)=>{
 
     const formattedItems = items.map(item => {
         const dish = dishes.find(d=>d._id.toString() === item.dishId.toString());
+        console.log('dish', dish);
         if (!dish) {
             console.log(`Dish not found for ID: ${item.dishId}`); // Debugging log
             return null; // Skip missing dishes
         }
         return{
             dish:{
+                dishId: dish._id,
                 name: dish.name,
                 image: dish.img,
                 price: dish.price
@@ -61,7 +66,7 @@ const CreateCart = async(req, res)=>{
     if(existingCart !== null && existingCart?.items.length !== 0){
         console.log('length', existingCart.items.length);
         formattedItems.forEach(newItem => {
-            const existingItem = existingCart.items.find((item)=>item.dish._id.toString() === newItem.dish._id.toString())
+            const existingItem = existingCart.items.find((item)=>item.dish.dishId.toString() === newItem.dish.dishId.toString())
             if(existingItem){
                 existingItem.quantity += newItem.quantity;
             }else{
@@ -74,6 +79,7 @@ const CreateCart = async(req, res)=>{
         }else if(existingCart !== null && existingCart.items.length === 0){
             existingCart.items = formattedItems.map((item)=>({
                 dish: {
+                    dishId: item.dish.dishId,
                     name: item.dish.name,
                     image: item.dish.image,
                     price: item.dish.price

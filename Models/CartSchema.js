@@ -1,4 +1,5 @@
-const {Schema, model} = require('mongoose');
+const mongoose = require('mongoose');
+const {Schema, model} = mongoose;
 
 const CartSchema = new Schema({
     // dishId:{
@@ -19,6 +20,11 @@ const CartSchema = new Schema({
      },
     items:[{
         dish: {
+            dishId:{
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'Dish',
+              required: true
+            },
            name:{
             type: String,
             required: true

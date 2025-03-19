@@ -42,8 +42,9 @@ const signUp = async(req, res)=>{
 
           res.status(200).json({
             status: true,
-            data: user,
-            token: token
+            message: 'Successfully register the user',
+            token: token,
+            user,
           })
     }
     catch(err){
