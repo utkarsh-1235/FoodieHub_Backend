@@ -1,5 +1,5 @@
 const express = require('express');
-const {CreateCart, getUserCart, DeleteItemsFromCart} = require('../Controller/CartController')
+const {CreateCart, getUserCart, DeleteCart, DeleteItemsFromCart} = require('../Controller/CartController')
 
 const cartRoute = express();
 

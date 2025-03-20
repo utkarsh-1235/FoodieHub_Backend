@@ -7,7 +7,7 @@ const CreateCart = async(req, res)=>{
     try{
         console.log(req.body);
         const cartData = req.body.cartData.cartData;
-        const {userId,items} = cartData;
+        const {userId,items, totalPrice, totalItems} = cartData;
         
         items.map(item => console.log(item));
         
@@ -68,7 +68,8 @@ const CreateCart = async(req, res)=>{
         formattedItems.forEach(newItem => {
             const existingItem = existingCart.items.find((item)=>item.dish.dishId.toString() === newItem.dish.dishId.toString())
             if(existingItem){
-                existingItem.quantity += newItem.quantity;
+                // existingItem.quantity += newItem.quantity;
+                existingItem.quantity = newItem.quantity;
             }else{
               existingCart.items.push(newItem) ;
             }
@@ -87,8 +88,8 @@ const CreateCart = async(req, res)=>{
                 quantity: item.quantity
 
         }))
-        existingCart.totalitems = existingCart.items.reduce((t, i) => t + i.quantity, 0);
-        existingCart.totalPrice = existingCart.items.reduce((t, i) => t + (i.quantity * i.dish.price), 0);
+        existingCart.totalitems = totalItems          //existingCart.items.reduce((t, i) => t + i.quantity, 0);
+        existingCart.totalPrice = totalPrice          //existingCart.items.reduce((t, i) => t + (i.quantity * i.dish.price), 0);
         
         console.log('updated existing Cart',existingCart)
         }
@@ -101,8 +102,8 @@ const CreateCart = async(req, res)=>{
                 totalPrice: formattedItems.reduce((t, i) => t + (i.quantity * i.dish.price), 0)
             });
         }
-        existingCart.totalitems = existingCart.items.reduce((t, i) => t + i.quantity, 0);
-        existingCart.totalPrice = existingCart.items.reduce((t, i) => t + (i.quantity * i.dish.price), 0);
+        existingCart.totalitems = totalItems //existingCart.items.reduce((t, i) => t + i.quantity, 0);
+        existingCart.totalPrice = totalPrice           //existingCart.items.reduce((t, i) => t + (i.quantity * i.dish.price), 0);
         console.log('Updating existing cart',existingCart);
 
         await existingCart.save();
@@ -157,6 +158,41 @@ const getUserCart = async(req, res)=>{
 }
 
 const DeleteItemsFromCart = async(req, res)=>{
+    try{
+        console.log(req.body);
+        const {id, userId} = req.body.item;
+
+        if(!id || !userId){
+            return res.status(400).json('Item not selected');
+        }
+        
+        const user = await userModel.findById(userId);
+
+        if(!user){
+            return res.status(401).json('User Not Found');
+        }
+        const item = await CartModel.findOneAndUpdate(
+                                    {'user.email': user.email},
+                                     { $pull: {items: {_id: id}}});
+        console.log(item);
+        res.status(200).json({
+            success: true,
+            message: 'Item removed successfully',
+            cartItems: Array.isArray(item) ? item : [],
+
+        })
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+
+}
+
+const DeleteCart = async(req, res)=>{
     try{
         console.log(req.body);
         const {items, UserId} = req.body.data;
@@ -221,5 +257,6 @@ existingCart.items.forEach(item => {
     
 module.exports = {CreateCart,
                   getUserCart,
-                  DeleteItemsFromCart
+                  DeleteItemsFromCart,
+                  DeleteCart
 };

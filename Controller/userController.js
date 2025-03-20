@@ -1,3 +1,4 @@
+const userModel = require('../Models/userSchema');
 const User = require('../Models/userSchema')
 
 const cookieOption = {
@@ -88,6 +89,47 @@ const login = async(req,res)=>{
     }
 }
 
+const addAddress = async(req, res)=>{
+    try{
+        console.log(req.body);
+        const {state, dist, city, pin, address} = req.body.address;
+        const userId = req.body.userId;
+    
+        if(!userId || !state || !dist || !pin || !address){
+            return res.status(400).json('All fields are required');
+        }
+    
+        // const user = await userModel.findByIdAndUpdate(
+        //                            userId,
+        //                            {$push: { address: address} });
+        const user = await userModel.findById(userId);
+         if(!user){
+            return res.status(401).json('User Not Found');
+         }
+        
+         user.address.push({
+            state: state,
+            district: dist,
+            pinCode: pin,
+            city: city,
+            address: address
+         })
+         
+         await user.save();
+         res.status(200).json({
+            status: true,
+            message: `Address added successfully ${user.name}`,
+            user
+         })
+    }catch(err){
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
 module.exports = {signUp,
-                  login
+                  login,
+                  addAddress
 };
