@@ -2,16 +2,26 @@
  const {Schema, model} = mongoose;
 
 const paymentSchema = new Schema({
-   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'User'
+   user: {
+     userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+     },
+     name:{
+        type: String,
+        required: true
+     },
+     email: {
+        type: String,
+        required: true
+     }
    },
-   orderId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'Order'
-   },
+//    orderId: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     required: true,
+//     ref: 'Order'
+//    },
    paymentId: {
     type: String,
     required: true
