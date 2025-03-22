@@ -1,8 +1,37 @@
 const orderModel = require('../Models/OrderSchema');
+const userModel = require('../Models/userSchema');
 
 const createOrder = async(req,res)=>{
     try{
-        
+        console.log(req.body);
+        const {userId} = req.userId;
+        const {Items, totalPrice,} = req.body;
+
+        if(!userId || !Items || Items.length === 0 || !totalPrice){
+            return res.status(400).json('Please send Necessary details');
+        }
+
+        const user = await userModel.findById(userId);
+        if(!user){
+            return res.status(401).json('User Not found');
+        }
+
+        const newOrder = new orderModel({
+            user: {
+                userId: userId,
+                name: user.name,
+                email: user.email
+            },
+            items: Items.map((item)=>({
+                dish:{
+                dishId: item.dishId,
+                name: item.name,
+                image: item.image,
+                price: item.price
+            }})),
+            totalPrice: totalPrice,
+
+        })
     }catch(err){
         res.status(500).json({
             success: false,
@@ -19,16 +48,16 @@ const getUserOrder = async(req, res)=>{
         return res.status(400).json('User id required');
     }
 
-    const order = await orderModel.findOne({'user.userId': userId});
+    const orders = await orderModel.find({'user.userId': userId}).populate('items.dish', 'name price image');
 
-    if(!order){
+    if(orders.length === 0){
         return res.status(401).json('No Orders found please order something');
     }
 
     return res.status(200).json({
         succes: true,
         message: 'Orders fetched succesfully',
-        Orders: order
+        Orders: Array.isArray(orders) ? orders : []
     })
 
    }catch(err){
