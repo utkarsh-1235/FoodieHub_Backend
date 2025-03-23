@@ -4,10 +4,11 @@ const userModel = require('../Models/userSchema');
 const createOrder = async(req,res)=>{
     try{
         console.log(req.body);
-        const {userId} = req.userId;
-        const {Items, totalPrice,} = req.body;
-
-        if(!userId || !Items || Items.length === 0 || !totalPrice){
+        const userId = req.body.user;
+        const Items = req.body.items;
+ 
+        console.log(userId, Items);
+        if(!userId || !Items || Items.length === 0 ){
             return res.status(400).json('Please send Necessary details');
         }
 
@@ -29,7 +30,7 @@ const createOrder = async(req,res)=>{
                 image: item.image,
                 price: item.price
             }})),
-            totalPrice: totalPrice,
+            // totalPrice: totalPrice,
 
         })
     }catch(err){
