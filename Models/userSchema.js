@@ -27,13 +27,9 @@ const userSchema = new Schema({
         minLength:[8, 'password must be at least 8 characters'],
         select: false,
     },
-    phoneNumber: [
-        {
-            type: String,
-        }
-    ],
     address:[
-        {
+        {   
+            phoneNumber: String,
             state: String,
             district: String,
             pinCode: String,

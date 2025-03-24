@@ -92,7 +92,7 @@ const login = async(req,res)=>{
 const addAddress = async(req, res)=>{
     try{
         console.log(req.body);
-        const {state, dist, city, pin, address} = req.body.address;
+        const {state, dist, city, pin, address, phoneNumber} = req.body.address;
         const userId = req.body.userId;
     
         if(!userId || !state || !dist || !pin || !address){
@@ -108,6 +108,7 @@ const addAddress = async(req, res)=>{
          }
         
          user.address.push({
+            phoneNumber: phoneNumber,
             state: state,
             district: dist,
             pinCode: pin,
