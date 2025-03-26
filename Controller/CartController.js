@@ -141,6 +141,7 @@ const getUserCart = async(req, res)=>{
       }
 
       const carts = await CartModel.findOne({'user.email': user.email}).lean();
+      console.log(carts.items);
       if(!carts){
         return res.status(402).json('Please Create Cart for this user no carts found');
       }
@@ -171,14 +172,19 @@ const DeleteItemsFromCart = async(req, res)=>{
         if(!user){
             return res.status(401).json('User Not Found');
         }
-        const item = await CartModel.findOneAndUpdate(
+        const updatedCart = await CartModel.findOneAndUpdate(
                                     {'user.email': user.email},
-                                     { $pull: {items: {_id: id}}});
-        console.log(item);
+                                     { $pull: {items: {_id: id}}},
+                                    { new: true});
+
+                if(!updatedCart){
+                    return res.status(402).json('Cart not found');
+                }
+        console.log(updatedCart);
         res.status(200).json({
             success: true,
             message: 'Item removed successfully',
-            cartItems: Array.isArray(item) ? item : [],
+            cartItems: Array.isArray(updatedCart.items) ? updatedCart.items : [],
 
         })
     }
